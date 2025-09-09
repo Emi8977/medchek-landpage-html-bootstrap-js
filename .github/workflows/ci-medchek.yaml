@@ -75,7 +75,7 @@ jobs:
       - name: Actualizar values del chart
         run: |
           ENV=${{ steps.overlay.outputs.env }}
-          VALUES_FILE="medchek-landpage-k8s-html-bootstrap-js/values-${ENV}.yaml"  #<---aca estan los valores del ambiente elegido
+          VALUES_FILE="medchek-landpage-k8s-html-bootstrap-js/values-${ENV}.yaml"
           echo "Actualizando $VALUES_FILE con tag $IMAGE_TAG"
           sed -i "s|tag:.*|tag: \"$IMAGE_TAG\"|g" "$VALUES_FILE"
 
@@ -84,6 +84,6 @@ jobs:
           cd medchek-landpage-k8s-html-bootstrap-js
           git config user.email "ci@github.com"
           git config user.name "GitHub Actions"
-          git add medchek-app/values-${{ steps.overlay.outputs.env }}.yaml
+          git add values-${{ steps.overlay.outputs.env }}.yaml
           git commit -m "ci: update image tag to $IMAGE_TAG for ${{ steps.overlay.outputs.env }}" || echo "Sin cambios para commitear"
           git push

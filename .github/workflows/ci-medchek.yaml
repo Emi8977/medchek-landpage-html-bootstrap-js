@@ -68,7 +68,7 @@ jobs:
         with:
           repository: ${{ env.MANIFESTS_REPO }}
           token: ${{ secrets.K8S_REPO_PAT }}
-          path: infra-repo
+          path: medchek-landpage-k8s-html-bootstrap-js
           ref: main
 
       - name: Actualizar values del chart
@@ -80,7 +80,7 @@ jobs:
 
       - name: Commit & Push cambios
         run: |
-          cd infra-repo
+          cd medchek-landpage-k8s-html-bootstrap-js
           git config user.email "ci@github.com"
           git config user.name "GitHub Actions"
           git add medchek-app/values-${{ steps.overlay.outputs.env }}.yaml

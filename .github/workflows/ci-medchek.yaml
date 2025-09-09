@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.'   # todo el código está en la raíz del repo
+      - '**'   # todo el código está en la raíz del repo
 
 env:
   IMAGE_NAME: emi8977/medchek-app-code

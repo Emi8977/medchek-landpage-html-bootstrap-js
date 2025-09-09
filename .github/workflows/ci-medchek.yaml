@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.'   # path de la app, cámbialo si no es frontend
+      - '.'   # todo el código está en la raíz del repo
 
 env:
   IMAGE_NAME: emi8977/medchek-app-code
@@ -60,10 +60,10 @@ jobs:
 
       - name: Build & Push Docker Image
         run: |
-          docker build -t $IMAGE_NAME:$IMAGE_TAG ./frontend
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .   # código en la raíz
           docker push $IMAGE_NAME:$IMAGE_TAG
 
-      - name: Clonar repo de manifiestos (infra)
+      - name: Clonar repo de manifiestos
         uses: actions/checkout@v4
         with:
           repository: ${{ env.MANIFESTS_REPO }}
@@ -74,7 +74,7 @@ jobs:
       - name: Actualizar values del chart
         run: |
           ENV=${{ steps.overlay.outputs.env }}
-          VALUES_FILE="infra-repo/medchek-app/values-${ENV}.yaml"
+          VALUES_FILE="medchek-landpage-k8s-html-bootstrap-js/medchek-app/values-${ENV}.yaml"
           echo "Actualizando $VALUES_FILE con tag $IMAGE_TAG"
           sed -i "s|tag:.*|tag: \"$IMAGE_TAG\"|g" "$VALUES_FILE"
 

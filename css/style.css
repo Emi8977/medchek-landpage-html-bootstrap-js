@@ -1,0 +1,121 @@
+/* --------------------------BODY-------------------------- */
+
+body {
+    background-color: #2f5691;
+    color: #fafafa;
+}
+.color-text {
+     color: #2f5691;
+}
+
+/* --------------------------NAVBAR-------------------------- */
+
+
+
+.nav-link {
+    color: #2f5691;
+    border-radius: 0.25rem;
+    background-color: #a1e557;
+    margin: 2%;
+}
+
+.nav-link:hover { /*cambia el color de las palabras al pasar el cursor sobre ellas*/
+    color: #a1e557;
+    background: #2f5691;
+    
+}
+
+.boton_nav_descarga { 
+    background-color: #2f5691;
+    color: #a1e557;
+    margin: 2%;
+
+}
+
+.boton_nav_descarga:hover { /*cambia el aspecto del boton al pasar el cursor sobre él*/
+    background-color: #a1e557;
+    color: #2f5691;
+}
+
+@media (max-width: 433px){ /*de este modo el boton navbar-toggler se mantiene en linea con el logo*/
+    .navbar-toggler{
+        margin-left: -25%;
+    }
+    
+}
+
+/*SCROLL*/
+@media (max-width: 992px){
+    #quienesSomos, #servicios, #reviews, #contacto {
+        scroll-margin-top: 300px; /* altura del header */
+    }
+}
+
+/* --------------------------CARRUSEL-------------------------- */
+
+.hero {
+    padding: 0; /* Elimina el padding del contenedor de la sección */
+    margin: 0;  /* Elimina el margen de la sección */
+}
+
+
+
+.espaciador::before {  /*arregla el problema de los titulos con el navbar*/
+  content: "";
+  display: block;
+  height: 88.25px;  /* Ajusta la altura según la navbar */
+  margin-top: -60px;
+}
+
+/* --------------------------FONDO-------------------------- */
+
+
+.bg-imagen{   /*imagen fija de fondo*/
+    background-image: url('../img/bg02.jpg') !important;
+    background-size: cover;       
+    background-position: center;  
+    background-attachment: fixed;
+    width: 100%;               
+}
+
+.bg-blur{   /*desenfoque en el fondo*/
+    background-color: #2f5691;
+    /* backdrop-filter: blur(8px); */
+    border-radius: 20px;
+    width: 100%;
+    box-shadow: 5px 5px 20px 0.5px #2f5691;
+}
+
+
+
+.boton_sec_descarga{
+    background-color: #2f5691;
+    color: #a1e557;
+}
+
+.boton_sec_descarga:hover{
+    background-color: #a1e557;
+    color: #2f5691;
+}
+/* --------------------------CONTACTO-------------------------- */
+
+#contacto {
+    background-color: #2f5691;
+}
+
+/* --------------------------CERTIFICADOS Y SEGURIDAD-------------------------- */
+
+.certificados_seguridad{
+    background-color: #fffdfd;
+    text-align: center;
+}
+
+.p_certificados_seguridad{
+    color: #2f5691;
+}
+
+.imgCertificado{
+    max-width: 20%;
+    height: auto;
+}
+

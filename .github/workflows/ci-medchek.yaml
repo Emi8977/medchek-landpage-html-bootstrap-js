@@ -1,0 +1,88 @@
+name: deploy-medchek
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.'   # path de la app, cámbialo si no es frontend
+
+env:
+  IMAGE_NAME: emi8977/medchek-app-code
+  MANIFESTS_REPO: Emi8977/medchek-landpage-k8s-html-bootstrap-js
+
+jobs:
+  build-publish-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código fuente
+        uses: actions/checkout@v4
+
+      - name: Obtener mensaje del último commit
+        id: commit
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "mensaje_commit=$COMMIT_MSG" >> $GITHUB_OUTPUT
+
+      - name: Detectar ambiente según mensaje del commit
+        id: overlay
+        run: |
+          MSG="${{ steps.commit.outputs.mensaje_commit }}"
+          if [[ "$MSG" == *"[deploy-dev]"* ]]; then
+            echo "env=dev" >> $GITHUB_OUTPUT
+          elif [[ "$MSG" == *"[deploy-stg]"* ]]; then
+            echo "env=stg" >> $GITHUB_OUTPUT
+          elif [[ "$MSG" == *"[deploy-prod]"* && "$MSG" == *"[approved]"* ]]; then
+            echo "env=prod" >> $GITHUB_OUTPUT
+          else
+            echo "env=none" >> $GITHUB_OUTPUT
+
+      - name: Cancelar si no es un commit de deploy
+        if: steps.overlay.outputs.env == 'none'
+        run: |
+          echo "No es un commit de deploy. Abortando workflow."
+          exit 0
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Definir tag completo de la imagen
+        run: |
+          SHORT_SHA=${GITHUB_SHA::7}
+          ENV=${{ steps.overlay.outputs.env }}
+          IMAGE_TAG="${ENV}-${SHORT_SHA}"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "TAG completo definido: $IMAGE_TAG"
+
+      - name: Build & Push Docker Image
+        run: |
+          docker build -t $IMAGE_NAME:$IMAGE_TAG ./frontend
+          docker push $IMAGE_NAME:$IMAGE_TAG
+
+      - name: Clonar repo de manifiestos (infra)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.MANIFESTS_REPO }}
+          token: ${{ secrets.K8S_REPO_PAT }}
+          path: infra-repo
+          ref: main
+
+      - name: Actualizar values del chart
+        run: |
+          ENV=${{ steps.overlay.outputs.env }}
+          VALUES_FILE="infra-repo/medchek-app/values-${ENV}.yaml"
+          echo "Actualizando $VALUES_FILE con tag $IMAGE_TAG"
+          sed -i "s|tag:.*|tag: \"$IMAGE_TAG\"|g" "$VALUES_FILE"
+
+      - name: Commit & Push cambios
+        run: |
+          cd infra-repo
+          git config user.email "ci@github.com"
+          git config user.name "GitHub Actions"
+          git add medchek-app/values-${{ steps.overlay.outputs.env }}.yaml
+          git commit -m "ci: update image tag to $IMAGE_TAG for ${{ steps.overlay.outputs.env }}" || echo "Sin cambios para commitear"
+          git push

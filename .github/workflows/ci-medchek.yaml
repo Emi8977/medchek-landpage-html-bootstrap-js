@@ -9,7 +9,7 @@ on:
 
 env:
   IMAGE_NAME: emi8977/medchek-app-code
-  MANIFESTS_REPO: Emi8977/medchek-landpage-k8s-html-bootstrap-js
+  MANIFESTS_REPO: emi8977/medchek-landpage-k8s-html-bootstrap-js
 
 jobs:
   build-publish-update:

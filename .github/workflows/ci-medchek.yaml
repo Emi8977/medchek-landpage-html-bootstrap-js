@@ -75,7 +75,7 @@ jobs:
       - name: Actualizar values del chart
         run: |
           ENV=${{ steps.overlay.outputs.env }}
-          VALUES_FILE="medchek-landpage-k8s-html-bootstrap-js/medchek-app/values-${ENV}.yaml"
+          VALUES_FILE="medchek-landpage-k8s-html-bootstrap-js/values-${ENV}.yaml"  #<---aca estan los valores del ambiente elegido
           echo "Actualizando $VALUES_FILE con tag $IMAGE_TAG"
           sed -i "s|tag:.*|tag: \"$IMAGE_TAG\"|g" "$VALUES_FILE"
 
